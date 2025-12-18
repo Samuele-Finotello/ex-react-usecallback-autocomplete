@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react"
+import { useState, useEffect, useCallback } from "react"
 
 function App() {
 
@@ -14,17 +14,28 @@ function App() {
       const res = await fetch(`http://localhost:3333/products?search=${query}`)
       const data = await res.json()
       setProducts(data)
+      console.log('Ciao')
     } catch (error) {
       console.error(error)
     }
   }
 
-  useEffect(() => {
-    fetchProducts(query)
-  }, [query])
+  const debounce = (callback, delay) => {
+    let timer;
+    return (value) => {
+      clearTimeout(timer)
+      timer = setTimeout(() => {
+        callback(value)
+      }, delay)
+    }
+  }
 
-  console.log(products)
-  console.log(query)
+  const debounceFetchProducts = useCallback(
+    debounce(fetchProducts, 500), [])
+
+  useEffect(() => {
+    debounceFetchProducts(query)
+  }, [query])
 
   return (
     <>
