@@ -4,6 +4,7 @@ function App() {
 
   const [query, setQuery] = useState('')
   const [products, setProducts] = useState([])
+  const [selectedProduct, setSelectedProduct] = useState(null)
 
   const fetchProducts = async (query) => {
     if (!query.trim()) {
@@ -45,11 +46,30 @@ function App() {
           <div className="dropdown">
             {products.map(product => {
               return (
-                <p key={product.id}>{product.name}</p>
+                <p key={product.id} onClick={() => {
+                  setProducts([]);
+                  setQuery('');
+                  setSelectedProduct(product);
+                }}>{product.name}</p>
               )
             })}
           </div>
         )}
+        <div>
+          {selectedProduct && (
+            <div className="card" key={selectedProduct.id}>
+              <figure><img src={selectedProduct.image} alt={selectedProduct.name} /></figure>
+              <h2>{selectedProduct.name} ({selectedProduct.brand})</h2>
+              <p>
+                {selectedProduct.description}
+                Color: {selectedProduct.color}
+              </p>
+              <span><strong>€ {selectedProduct.price}</strong></span>
+            </div>
+          )}
+        </div>
+
+
       </div>
     </>
   )
